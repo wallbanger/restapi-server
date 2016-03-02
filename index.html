@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script>
+        var userListData = [];
+
+        $(document).ready(function() {
+
+            populate();
+
+            $('#add').click(addUser);
+
+            $('#delete').click(deleteUser);
+
+        });
+
+        function deleteUser() {
+
+            $.ajax({
+                type: 'DELETE',
+                url: '/deleteUser/' + $('#number').val(),
+            }).done(function() {
+               location.reload();
+            });
+        }
+
+        function addUser() {
+
+            $.ajax({
+                type: 'POST',
+                data: 'name=' + $('#name').val(),
+                url: '/addUser',
+                dataType: 'JSON'
+            }).done(function() {
+                location.reload();
+            });
+        }
+
+        function populate() {
+
+            var content = '';
+
+            $.getJSON( '/listUsers', function( data ) {
+                content += '<ol>';
+                $.each(data, function(){
+                    content += '<li>' + this + '</li>';
+                });
+                content += '</ol>';
+
+                $('#data').html(content);
+            });
+        };
+
+
+    </script>
+</head>
+<body>
+    <div id="data"></div>
+    <div>
+        fill user name <input type="text" id="name">
+        <input type="submit" id="add" value="add">
+    </div>
+    <div>
+        fill number: <input type="text" id="number">
+        <input type="submit" id="delete" value="delete">
+    </div>
+</body>
